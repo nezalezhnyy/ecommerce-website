@@ -1,13 +1,14 @@
-import { useState, useEffect } from "react"
-import { db, fetchItems } from "./firebaseClient"
-import { query, getDocs, getDoc, where, collection, orderBy, limit, } from "firebase/firestore"
+import { useState, useEffect, useContext } from "react";
+import { db, fetchItems } from "./firebaseClient";
+import { query, getDocs, getDoc, where, collection, orderBy, limit, } from "firebase/firestore";
 
-import DoubleSlider from "./DoubleSlider.jsx"
-
+import { MainQueryContext } from "./MainPage.jsx";
+import DoubleSlider from "./DoubleSlider.jsx";
 
 function SideBar() {
 
-    const [categories, setCategories] = useState([])
+    const {mainQuery, setMainQuery} = useContext(MainQueryContext);
+    const [categories, setCategories] = useState([]);
 
     useEffect(() => {
         async function loadCategories() {
@@ -31,11 +32,19 @@ function SideBar() {
         <div className="sidebar">
             <h4>Categories</h4>
             <div className="sidebar__categories">
+
                 {categories.map((category) => (
-                    <a href="#" className="sidebar__category" key={category}>
-                        {category}
-                    </a>
+                    <label  className="sidebar__category" 
+                            key={category} 
+                            onClick={() => setMainQuery((q) => ({ ...q, category: category}))}>
+
+                        <input type="radio" name="category" value={category}/>
+                        <span className="custom-radio"></span>
+                        <span>{category}</span>
+
+                    </label>
                 ))}
+
             </div>
             <h4>Price</h4>
             <DoubleSlider />

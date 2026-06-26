@@ -7,7 +7,8 @@ function DoubleSlider() {
     const [pointPosition1, setPointPosition1] = useState(10);
     const [pointPosition2, setPointPosition2] = useState(90);
 
-    const [priceRange, setPriceRange] = useState([])
+    const [priceRange, setPriceRange] = useState([0, 25000])
+    const [maxPrice, setMaxPrice] = useState()
 
     useEffect(() => {
         async function findMaxPrice() {
@@ -17,12 +18,20 @@ function DoubleSlider() {
                 limit(1)
             );
 
-            const maxPrice = await fetchItems(q);
+            const product = await fetchItems(q);
+            const price = product[0].price;
 
-            console.log(maxPrice[0].price)
+            setMaxPrice(price);
+            setPriceRange([price * pointPosition1 / 100, price * pointPosition2 / 100])
         }
-        findMaxPrice()
+        findMaxPrice();
     }, [])
+
+    useEffect(() => {
+        if (maxPrice) {
+            setPriceRange([maxPrice * pointPosition1 / 100, maxPrice * pointPosition2 / 100])
+        } else return
+    }, [pointPosition1, pointPosition2])
 
     function mouseDownHandler(event, pointNumber) {
         event.preventDefault();
@@ -37,7 +46,7 @@ function DoubleSlider() {
             document.removeEventListener('mousemove', handleMouseMove);
             document.removeEventListener('mouseup', mouseUpHandler)
         }
-
+        
         document.addEventListener('mousemove', handleMouseMove);
         document.addEventListener('mouseup', mouseUpHandler);
     }
@@ -65,8 +74,8 @@ function DoubleSlider() {
     return (
         <div className='slider__container'>
             <div className='slider__text__container'>
-                <span>{Math.round(pointPosition1)}</span>
-                <span>{Math.round(pointPosition2)}</span>
+                <span>{Math.round(priceRange[0])}</span>
+                <span>{Math.round(priceRange[1])}</span>
             </div>
             <div className="slider" style={{
                 background: `linear-gradient(
