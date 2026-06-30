@@ -1,35 +1,34 @@
 import { IconSearch, IconShoppingCart, IconHeart, IconUser } from '@tabler/icons-react';
-import Button from './Button';
+import Button from '../Button/Button';
+
+import styles from './Header.module.css';
 
 function Header() {
     return(
-        <div className='header'>
+        <div className={styles.root}>
             <div className='container'>
-                <div className='header__container'>
-                    <div className="header__logo">
+                <div className={styles.header}>
+                    <div className={styles.logo}>
                         <h2>Market</h2>
                     </div>
-                    <div className="header__search">
-                        <IconSearch stroke={2}/>
+                    <div className={styles.search}>
+                        <IconSearch stroke={1.4}/>
                         <input 
                             type="text"
                             placeholder='Enter a search query'
-                            className='search__input' 
+                            className={styles.search__input} 
                         />
                     </div>
-                    <div className='header__buttons'>
+                    <div className={styles.navbar}>
                         <Button 
-                            name="button button-basket" 
                             text="Basket"
                             Icon={IconShoppingCart}
                         />
                         <Button
-                            name="button button-fav"
                             text="Favorites"
                             Icon={IconHeart}
                         />
                         <Button
-                            name="button button-profile"
                             text="Profile"
                             Icon={IconUser}
                         />

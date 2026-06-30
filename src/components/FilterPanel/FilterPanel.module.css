@@ -1,0 +1,13 @@
+.root {
+    position: sticky;
+    top: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    width: 100%;
+    height: 50px;
+    padding-inline: 50px;
+    background-color: var(--main-background-color);
+    border-bottom: 1px solid var(--border-color-light-gray);
+    z-index: 90;
+}

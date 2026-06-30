@@ -1,0 +1,62 @@
+.root {
+    position: relative;
+    user-select: none;
+}
+
+.button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-direction: row;
+    border: 1px solid var(--border-color-light-gray);
+    border-radius: 10px;
+    padding-block: 2px;
+    padding-left: 10px;
+    padding-right: 6px;
+    width: 168px;
+    gap: 8px;
+    color: var(--font-color-gray); 
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.icon {
+    color: var(--border-color-light-gray);
+    transition: 0.2s;
+}
+
+.rotate {
+    transform: rotate(180deg);
+    transform-origin: center;
+}
+
+.button:hover {
+    border-color: var(--border-color-gray);
+}
+
+.button:hover .icon {
+    color: var(--border-color-gray);
+}
+
+.menu {
+    position: absolute;
+    width: 100%;
+    top: 120%;
+    left: 0;
+    background-color: var(--main-background-color);
+    border-radius: 10px;
+    border: 1px solid var(--border-color-light-gray);
+    cursor: pointer;
+}
+
+.menu li {
+    padding: 2px 8px;
+}
+
+.menu li:hover:not(.selectedOption) {
+    background-color: var(--header-background-color);
+}
+
+.selectedOption {
+    background-color: var(--color-light-gray);
+}

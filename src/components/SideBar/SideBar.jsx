@@ -1,9 +1,12 @@
 import { useState, useEffect, useContext } from "react";
-import { db, fetchItems } from "./firebaseClient";
+import { db, fetchItems } from "../../firebaseClient.js";
 import { query, getDocs, getDoc, where, collection, orderBy, limit, } from "firebase/firestore";
 
-import { MainQueryContext } from "./MainPage.jsx";
-import DoubleSlider from "./DoubleSlider.jsx";
+import { MainQueryContext } from "../MainPage/MainPage.jsx";
+
+import DoubleSlider from "../DoubleSlider/DoubleSlider.jsx";
+
+import styles from './SideBar.module.css'
 
 function SideBar() {
 
@@ -29,17 +32,17 @@ function SideBar() {
     }, [])
 
     return (
-        <div className="sidebar">
+        <div className={styles.root}>
             <h4>Categories</h4>
-            <div className="sidebar__categories">
+            <div className={styles.categories}>
 
                 {categories.map((category) => (
-                    <label  className="sidebar__category" 
+                    <label  className={styles.category} 
                             key={category} 
                             onClick={() => setMainQuery((q) => ({ ...q, category: category}))}>
 
                         <input type="radio" name="category" value={category}/>
-                        <span className="custom-radio"></span>
+                        <span className={styles.custom__radio}></span>
                         <span>{category}</span>
 
                     </label>

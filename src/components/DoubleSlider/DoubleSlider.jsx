@@ -1,11 +1,13 @@
 import { query, collection, orderBy, limit } from '@firebase/firestore';
 import { useEffect, useState } from 'react';
-import { db, fetchItems } from './firebaseClient.js';
+import { db, fetchItems } from '../../firebaseClient.js';
+
+import styles from './DoubleSlider.module.css'
 
 function DoubleSlider() {
 
-    const [pointPosition1, setPointPosition1] = useState(10);
-    const [pointPosition2, setPointPosition2] = useState(90);
+    const [thumbPosition1, setThumbPosition1] = useState(10);
+    const [thumbPosition2, setThumbPosition2] = useState(90);
 
     const [priceRange, setPriceRange] = useState([0, 25000])
     const [maxPrice, setMaxPrice] = useState()
@@ -22,24 +24,24 @@ function DoubleSlider() {
             const price = product[0].price;
 
             setMaxPrice(price);
-            setPriceRange([price * pointPosition1 / 100, price * pointPosition2 / 100])
+            setPriceRange([price * thumbPosition1 / 100, price * thumbPosition2 / 100])
         }
         findMaxPrice();
     }, [])
 
     useEffect(() => {
         if (maxPrice) {
-            setPriceRange([maxPrice * pointPosition1 / 100, maxPrice * pointPosition2 / 100])
+            setPriceRange([maxPrice * thumbPosition1 / 100, maxPrice * thumbPosition2 / 100])
         } else return
-    }, [pointPosition1, pointPosition2])
+    }, [thumbPosition1, thumbPosition2])
 
-    function mouseDownHandler(event, pointNumber) {
+    function mouseDownHandler(event, thumbNumber) {
         event.preventDefault();
 
         const cursorPos = event.clientX;
 
         function handleMouseMove(e) {
-            mouseMoveHandler(e, pointNumber)
+            mouseMoveHandler(e, thumbNumber)
         }
 
         function mouseUpHandler(e) {
@@ -51,20 +53,20 @@ function DoubleSlider() {
         document.addEventListener('mouseup', mouseUpHandler);
     }
 
-    function mouseMoveHandler(event, pointNumber) {
+    function mouseMoveHandler(event, thumbNumber) {
 
-        const sliderWidth = document.querySelector('.slider').clientWidth;
-        const pointWidth = document.querySelector('.slider__point').clientWidth;
+        const sliderWidth = document.querySelector("." + styles.slider).clientWidth;
+        const thumbWidth = document.querySelector("." + styles.thumb).clientWidth;
 
-        if (pointNumber === 1) {
-            setPointPosition1((p) => {
+        if (thumbNumber === 1) {
+            setThumbPosition1((p) => {
                 const next = p + ((event.movementX) / sliderWidth) * 100;
-                return Math.min(Math.max(next, 0), pointPosition2 - ((pointWidth / sliderWidth) * 100));
+                return Math.min(Math.max(next, 0), thumbPosition2 - ((thumbWidth / sliderWidth) * 100));
             });
         } else {
-            setPointPosition2((p) => {
+            setThumbPosition2((p) => {
                 const next = p + ((event.movementX) / sliderWidth) * 100;
-                return Math.min(Math.max(next, pointPosition1 + ((pointWidth / sliderWidth) * 100)), 100);
+                return Math.min(Math.max(next, thumbPosition1 + ((thumbWidth / sliderWidth) * 100)), 100);
             });
         }
     }
@@ -72,29 +74,29 @@ function DoubleSlider() {
     
     
     return (
-        <div className='slider__container'>
-            <div className='slider__text__container'>
+        <div className={styles.root}>
+            <div className={styles.values}>
                 <span>{Math.round(priceRange[0])}</span>
                 <span>{Math.round(priceRange[1])}</span>
             </div>
-            <div className="slider" style={{
+            <div className={styles.slider} style={{
                 background: `linear-gradient(
                     to right,
-                    rgb(180, 180, 180) 0%,
-                    rgb(180, 180, 180) ${pointPosition1}%,
-                    #000000 ${pointPosition1}%,
-                    #000000 ${pointPosition2}%,
-                    rgb(180, 180, 180) ${pointPosition2}%,
-                    rgb(180, 180, 180) 100%
+                    var(--color-light-gray) 0%,
+                    var(--color-light-gray) ${thumbPosition1}%,
+                    var(--border-color-gray) ${thumbPosition1}%,
+                    var(--border-color-gray) ${thumbPosition2}%,
+                    var(--color-light-gray) ${thumbPosition2}%,
+                    var(--color-light-gray) 100%
                 )`
             }}>
-                <div    className="slider__point slider__point1" 
+                <div    className={styles.thumb} 
                         onMouseDown={(e) => mouseDownHandler(e, 1)} 
-                        style={{left: pointPosition1 + '%'}}>
+                        style={{left: thumbPosition1 + '%'}}>
                 </div>
-                <div    className="slider__point slider__point2" 
+                <div    className={styles.thumb} 
                         onMouseDown={(e) => mouseDownHandler(e, 2)} 
-                        style={{left: pointPosition2 + '%'}}>
+                        style={{left: thumbPosition2 + '%'}}>
                 </div>
             </div>
         </div>

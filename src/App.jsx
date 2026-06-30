@@ -1,5 +1,5 @@
-import Header from "./Header"
-import MainPage from "./MainPage"
+import Header from "./components/Header/Header"
+import MainPage from "./components/MainPage/MainPage"
 
 function App() {
 
@@ -12,3 +12,4 @@ function App() {
 }
 
 export default App
+
