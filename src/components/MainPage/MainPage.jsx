@@ -1,5 +1,5 @@
-import { query, where, collection, orderBy } from "firebase/firestore";
-import { db, fetchItems } from "../../firebaseClient.js";
+import { supabase } from "../../supabase.js";
+
 import { createContext, useEffect, useState } from "react";
 
 import FilterPanel from "../FilterPanel/FilterPanel.jsx";
@@ -11,39 +11,43 @@ import styles from './MainPage.module.css'
 export const MainQueryContext = createContext({});
 
 function MainPage() {
-    const [mainQuery, setMainQuery] = useState({});
+    const [mainQuery, setMainQuery] = useState({
+        category: undefined,
+        priceRange: undefined,
+        "thumb1": 0, 
+        "thumb2": 100
+    });
     const [products, setProducts] = useState([]);
     const [page, setPage] = useState([0, 20]);
 
     useEffect(() => {
         async function getProducts() {
-            const constraints = [];
 
-            if (mainQuery.category) constraints.push(where('category', '==', mainQuery.category));
-            
+            let query = supabase.schema('webshop').from('products').select('*')
+
+            if (mainQuery.category) query = query.eq('category', mainQuery.category)
+            if (mainQuery.priceRange) query = query
+                .gte('price', mainQuery.priceRange[0])
+                .lte('price', mainQuery.priceRange[1])
+
             switch(mainQuery.sortBy) {
                 case "by rating":
-                    constraints.push(orderBy('rating'));
+                    query = query.order('rating', { ascending: false });
                     break;
                 case "new":
-                    constraints.push(orderBy('meta.createdAt', 'desc'));
+                    query = query.order('created_at', { ascending: false });
                     break;
                 case "price: low to high":
-                    constraints.push(orderBy('price'));
+                    query = query.order('price');
                     break;
                 case "price: high to low":
-                    constraints.push(orderBy('price', 'desc'));
+                    query = query.order('price', { ascending: false });
                     break;
             }
-            
-            const q = query(collection(db, "products"), ...constraints);
 
-            try {
-                const items = await fetchItems(q);
-                setProducts(items);
-            } catch (err) {
-                console.error("query error:", err);
-            }
+            const { data, error } = await query
+            setProducts(data)
+            
         }
         getProducts()
     }, [mainQuery])

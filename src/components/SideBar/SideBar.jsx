@@ -1,6 +1,6 @@
+import { supabase } from "../../supabase.js";
+
 import { useState, useEffect, useContext } from "react";
-import { db, fetchItems } from "../../firebaseClient.js";
-import { query, getDocs, getDoc, where, collection, orderBy, limit, } from "firebase/firestore";
 
 import { MainQueryContext } from "../MainPage/MainPage.jsx";
 
@@ -15,21 +15,16 @@ function SideBar() {
 
     useEffect(() => {
         async function loadCategories() {
-            const q = query(
-                collection(db, 'products'),
-                orderBy('id')
-            )
+            const { data, error } = await supabase.rpc('get_categories');
 
-            const products = await fetchItems(q)
-
-            const uniqueCategories = new Set()
-        
-            products.forEach((obj) => uniqueCategories.add(obj.category))
-
-            setCategories([...uniqueCategories])
+            setCategories(data.map(item => item.category))
         }
         loadCategories()
     }, [])
+
+    function handleSliderChange(value) {
+        setMainQuery((q) => ({ ...q, priceRange: value}))
+    }
 
     return (
         <div className={styles.root}>
@@ -37,20 +32,25 @@ function SideBar() {
             <div className={styles.categories}>
 
                 {categories.map((category) => (
-                    <label  className={styles.category} 
-                            key={category} 
-                            onClick={() => setMainQuery((q) => ({ ...q, category: category}))}>
-
-                        <input type="radio" name="category" value={category}/>
+                    <label className={styles.category} key={category}>
+                        <input  type="radio"
+                                name="category"
+                                value={category} 
+                                checked={mainQuery.category === category} 
+                                onChange={() => {}} 
+                                onClick={() => {
+                                    if (mainQuery.category === category) setMainQuery((q) => q = {...q, category: undefined})
+                                    else setMainQuery((q) => q = {...q, category: category})
+                                }}
+                        />
                         <span className={styles.custom__radio}></span>
                         <span>{category}</span>
-
                     </label>
                 ))}
 
             </div>
             <h4>Price</h4>
-            <DoubleSlider />
+            <DoubleSlider onChange={handleSliderChange}/>
         </div>
     )
 }
