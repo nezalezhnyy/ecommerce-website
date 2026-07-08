@@ -8,12 +8,16 @@
     padding: 4px 10px;
     gap: 4px;
     color: var(--font-color-gray);
+    cursor: pointer;
+    transition: 0.2s;
 }
 
-.root:hover {
-    cursor: pointer;
+.root:hover, .root:hover .text {
+    border-color: var(--color-green-hover);
+    color: var(--color-green-hover); 
 }
 
 .text {
     font-size: 18px;
+    transition: 0.2s;
 }

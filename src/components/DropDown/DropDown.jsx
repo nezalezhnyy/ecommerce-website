@@ -6,14 +6,9 @@ import { IconChevronDown } from '@tabler/icons-react';
 
 import styles from './DropDown.module.css';
 
-function DropDown({onSelect, options}) {
+function DropDown({ sortOptions, selectedSort, setSelectedSort, handleSortSelect }) {
     const [open, setOpen] = useState(false);
-    const [selectedOption, setSelectedOption] = useState(options[0]);
     const buttonRef = useRef(null);
-
-    useEffect(() => {
-        onSelect(selectedOption)
-    }, [selectedOption])
 
     useEffect(() => {
         function handleClick(e) {
@@ -31,7 +26,7 @@ function DropDown({onSelect, options}) {
             <div    className={styles.button}
                     onClick={() => setOpen(o => o = !o)}
             >
-                <span>{selectedOption}</span>
+                <span>{selectedSort}</span>
                 <IconChevronDown className={clsx(
                     styles.icon,
                     open && styles.rotate
@@ -40,10 +35,10 @@ function DropDown({onSelect, options}) {
 
             {open && (
                 <ul className={styles.menu}>
-                    {options.map((option) => (
-                        <li key={option} className={option === selectedOption ? styles.selectedOption : null} onClick={() => {
+                    {sortOptions.map((option) => (
+                        <li key={option} className={option === selectedSort ? styles.selectedSort : null} onClick={() => {
                             setOpen(false);
-                            setSelectedOption(option)
+                            handleSortSelect(option)
                         }
                         }>{option}</li>
                     ))}

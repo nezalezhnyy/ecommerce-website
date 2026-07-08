@@ -1,0 +1,37 @@
+.root {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    gap: 8px;
+}
+
+.root button {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 16px;
+    padding: 4px 12px;
+    border: 1px solid var(--border-color-light-gray);
+    border-radius: 10px;
+    width: 48px;
+    height: 48px;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.dots {
+    padding: 0 8px;
+    display: flex;
+    align-items: center;
+    user-select: none
+}
+
+.root button:hover:not(.active) {
+    border-color: var(--color-green-hover);
+    color: var(--color-green-hover);
+}
+
+.active {
+    background-color: var(--color-green-hover);
+    color: var(--main-background-color);
+}

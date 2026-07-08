@@ -1,10 +1,11 @@
 import { supabase } from "../../supabase.js";
 
-import { createContext, useEffect, useState } from "react";
+import { createContext, useEffect, useState, useRef } from "react";
 
 import FilterPanel from "../FilterPanel/FilterPanel.jsx";
 import SideBar from "../SideBar/SideBar.jsx";
 import ProductCard from "../ProductCard/ProductCard.jsx";
+import Pagination from "../Pagination/Pagination.jsx";
 
 import styles from './MainPage.module.css'
 
@@ -14,11 +15,17 @@ function MainPage() {
     const [mainQuery, setMainQuery] = useState({
         category: undefined,
         priceRange: undefined,
-        "thumb1": 0, 
-        "thumb2": 100
+        sortBy: "by rating",
+        "thumb1": 0,
+        "thumb2": 100,
     });
+
     const [products, setProducts] = useState([]);
-    const [page, setPage] = useState([0, 20]);
+    const [currentPage, setCurrentPage] = useState(1);
+    const itemsPerPage = 20;
+    const totalPages = Math.ceil(products.length / itemsPerPage);
+
+    const mainRef = useRef(null);
 
     useEffect(() => {
         async function getProducts() {
@@ -45,31 +52,35 @@ function MainPage() {
                     break;
             }
 
-            const { data, error } = await query
-            setProducts(data)
-            
+            const { data, error } = await query;
+
+            setProducts(data);
+            setCurrentPage(1);
         }
         getProducts()
     }, [mainQuery])
 
     return (
-        <div className={styles.root}>
-            <div className="container">
-                <div className={styles.main}>
-                    <MainQueryContext.Provider value={{mainQuery, setMainQuery}}>
-                        <FilterPanel/>
+        <MainQueryContext.Provider value={{mainQuery, setMainQuery}}>
+            <FilterPanel/>
+            <div className={styles.root}>
+                <div className="container">
+                    <div className={styles.main} ref={mainRef}>
                         <div className={styles.sheet}>
                             <SideBar/>
-                            <div className={styles.products}>
-                                {products.slice(page[0], page[1]).map((product) => (
-                                    <ProductCard props={product} key={product.id}/>
-                                ))}
+                            <div className={styles.wrapper}>
+                                <div className={styles.products}>
+                                    {products.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage).map((product) => (
+                                        <ProductCard props={product} key={product.id}/>
+                                    ))}
+                                </div>
+                                <Pagination itemsPerPage={itemsPerPage} currentPage={currentPage} setCurrentPage={setCurrentPage} totalPages={totalPages}/>
                             </div>
                         </div>
-                    </MainQueryContext.Provider>
+                    </div>
                 </div>
             </div>
-        </div>
+        </MainQueryContext.Provider>
     )
 }
 

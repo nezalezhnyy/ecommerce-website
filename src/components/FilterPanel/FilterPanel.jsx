@@ -1,4 +1,4 @@
-import { useContext } from 'react';
+import { useState, useContext } from 'react';
 
 import { MainQueryContext } from "../MainPage/MainPage.jsx";
 
@@ -12,24 +12,33 @@ import styles from './FilterPanel.module.css';
 function FilterPanel() {
     const {mainQuery, setMainQuery} = useContext(MainQueryContext);
 
+    const sortOptions = ["by rating", "new", "price: low to high", "price: high to low"];
+    const [selectedSort, setSelectedSort] = useState(sortOptions[0]);
+
     function handleSortSelect(value) {
-        setMainQuery((q) => ({ ...q, sortBy: value}))
+        setMainQuery((q) => ({ ...q, sortBy: value}));
+        setSelectedSort(value)
     }
 
     function handleClearFilters() {
+        setSelectedSort(sortOptions[0]);
         setMainQuery({
             category: undefined,
             priceRange: undefined,
-            "thumb1": 0, 
-            "thumb2": 100
+            sortBy: "by rating",
+            "thumb1": 0,
+            "thumb2": 100,
         })
-        
     }
 
     return (
         <div className={styles.root}>
-            <Button text="Clear filters" Icon={IconX} onClick={() => handleClearFilters()}/>
-            <DropDown onSelect={handleSortSelect} options={["by rating", "new", "price: low to high", "price: high to low"]}/>
+            <div className='container'>
+                <div className={styles.filterPanel}>
+                    <Button text="Clear filters" Icon={IconX} onClick={() => handleClearFilters()}/>
+                    <DropDown sortOptions={sortOptions} selectedSort={selectedSort} handleSortSelect={handleSortSelect} />
+                </div>
+            </div>
         </div>
     )
 }

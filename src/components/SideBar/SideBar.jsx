@@ -8,7 +8,7 @@ import DoubleSlider from "../DoubleSlider/DoubleSlider.jsx";
 
 import styles from './SideBar.module.css'
 
-function SideBar() {
+function SideBar({ setCurrentPage }) {
 
     const {mainQuery, setMainQuery} = useContext(MainQueryContext);
     const [categories, setCategories] = useState([]);
@@ -21,6 +21,10 @@ function SideBar() {
         }
         loadCategories()
     }, [])
+
+    function handleCategoryChange(category) {
+        setMainQuery((q) => q = {...q, category: category})
+    }
 
     function handleSliderChange(value) {
         setMainQuery((q) => ({ ...q, priceRange: value}))
@@ -40,7 +44,7 @@ function SideBar() {
                                 onChange={() => {}} 
                                 onClick={() => {
                                     if (mainQuery.category === category) setMainQuery((q) => q = {...q, category: undefined})
-                                    else setMainQuery((q) => q = {...q, category: category})
+                                    else handleCategoryChange(category)
                                 }}
                         />
                         <span className={styles.custom__radio}></span>

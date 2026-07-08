@@ -10,7 +10,7 @@ function DoubleSlider({onChange}) {
 
     const {mainQuery, setMainQuery} = useContext(MainQueryContext);
 
-    const [priceRange, setPriceRange] = useState([0, 25000])
+    const [priceRange, setPriceRange] = useState([0, 1])
     const [maxPrice, setMaxPrice] = useState()
 
     useEffect(() => {

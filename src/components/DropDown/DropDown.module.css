@@ -53,10 +53,10 @@
     padding: 2px 8px;
 }
 
-.menu li:hover:not(.selectedOption) {
+.menu li:hover:not(.selectedSort) {
     background-color: var(--header-background-color);
 }
 
-.selectedOption {
+.selectedSort {
     background-color: var(--color-light-gray);
 }
