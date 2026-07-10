@@ -8,7 +8,8 @@
     --font-color-gray: #414141;
     --font-color-light-gray: #777;
     --color-light-gray: #e4e4e4;
-    --color-green-hover: #7bb17b;
+    --color-green-hover: #48d597;
+    --color-primary-green-hover: #8fdbb0;
 }
 
 body {
@@ -37,6 +38,7 @@ ul, ol {
 
 button {
     background: none;
+    border: none;
     color: var(--font-color-gray);
     cursor: pointer;
     font-family: "Inter Tight", sans-serif;
@@ -52,6 +54,14 @@ input[type="text"] {
 
 input[type="text"]::placeholder {
     color: var(--font-color-light-gray);
+}
+
+.link,
+.link:hover,
+.link:visited,
+.link:active {
+  text-decoration: none;
+  color: inherit;
 }
 
 ::-webkit-scrollbar {

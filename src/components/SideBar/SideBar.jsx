@@ -2,7 +2,7 @@ import { supabase } from "../../supabase.js";
 
 import { useState, useEffect, useContext } from "react";
 
-import { MainQueryContext } from "../MainPage/MainPage.jsx";
+import { MainQueryContext } from "../../pages/MainPage/MainPage.jsx";
 
 import DoubleSlider from "../DoubleSlider/DoubleSlider.jsx";
 

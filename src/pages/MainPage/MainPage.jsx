@@ -2,10 +2,10 @@ import { supabase } from "../../supabase.js";
 
 import { createContext, useEffect, useState, useRef } from "react";
 
-import FilterPanel from "../FilterPanel/FilterPanel.jsx";
-import SideBar from "../SideBar/SideBar.jsx";
-import ProductCard from "../ProductCard/ProductCard.jsx";
-import Pagination from "../Pagination/Pagination.jsx";
+import FilterPanel from "../../components/FilterPanel/FilterPanel.jsx";
+import SideBar from "../../components/SideBar/SideBar.jsx";
+import ProductCard from "../../components/ProductCard/ProductCard.jsx";
+import Pagination from "../../components/Pagination/Pagination.jsx";
 
 import styles from './MainPage.module.css'
 

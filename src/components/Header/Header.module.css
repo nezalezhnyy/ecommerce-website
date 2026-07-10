@@ -1,5 +1,6 @@
 .root {
-    position: fixed;
+    position: sticky;
+    top: 0;
     display: flex;
     align-items: center;
     width: 100%;
@@ -20,6 +21,14 @@
 
 .logo {
     text-transform: uppercase;
+}
+
+.logo h2 {
+    transition: 0.2s ease;
+}
+
+.logo h2:hover {
+    color: var(--color-green-hover);
 }
 
 .search {

@@ -1,12 +1,27 @@
+import clsx from 'clsx';
+
 import styles from './Button.module.css'
 
-function Button({text, Icon, onClick}) {
-    return(
-        <div className={styles.root} onClick={onClick}>
-            {Icon && <Icon className={styles.icon} stroke={1.4}/>}
-            {text && <span className={styles.text}>{text}</span>}
-        </div>
-    )
-};
+function Button({ 
+  children, 
+  size = 'medium', 
+  variant = 'default', 
+  onClick, 
+  disabled = false,
+}) {
+  return (
+    <button
+        onClick={onClick}
+        disabled={disabled}
+        className={clsx(
+            styles.btn,
+            styles[`btn--${size}`],
+            styles[`btn--${variant}`], 
+        )}
+    >
+      {children}
+    </button>
+  );
+}
 
 export default Button

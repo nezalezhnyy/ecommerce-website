@@ -1,0 +1,85 @@
+.root {
+    background-color: var(--main-background-color);
+}
+
+.productDetail {
+    display: flex;
+    flex-direction: column;
+}
+
+.imageAndTitle {
+    display: flex;
+    flex-direction: row;
+    gap: 18px;
+    padding: 18px;
+    width: 100%;
+}
+
+.imageContainer {
+    display: flex;
+    flex-direction: row;
+    gap: 8px;
+}
+
+.imageList {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    height: 400px;
+    overflow-y: scroll;
+}
+
+.img {
+    width: 64px;
+    height: 80px;
+    background-position: center center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-color: var(--color-light-gray);
+    border-radius: 12px;
+    cursor: pointer;
+    transition: 0.2s ease;
+}
+
+.img:hover:not(.img--current) {
+    filter: brightness(0.95);
+}
+
+.img--current {
+    filter: brightness(0.8);
+}
+
+.mainImage {
+    background-position: center center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-color: var(--color-light-gray);
+    width: 360px;
+    height: 400px;
+    border-radius: 18px;
+}
+
+.titleContainer {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    flex: 1;
+}
+
+.inStock:not(.inStock span) {
+    color: var(--color-green-hover);
+}
+
+.title {
+
+}
+
+.price {
+
+}
+
+.buttons {
+    display: flex;
+    flex-direction: row;
+    gap: 18px;
+}

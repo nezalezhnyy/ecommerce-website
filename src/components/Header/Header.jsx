@@ -1,3 +1,5 @@
+import { Link } from 'react-router-dom'
+
 import { IconSearch, IconShoppingCart, IconHeart, IconUser } from '@tabler/icons-react';
 import Button from '../Button/Button';
 
@@ -8,9 +10,11 @@ function Header() {
         <div className={styles.root}>
             <div className='container'>
                 <div className={styles.header}>
-                    <div className={styles.logo}>
-                        <h2>Market</h2>
-                    </div>
+                    <Link to={'/'} className='link'>
+                        <div className={styles.logo}>
+                            <h2>Market</h2>
+                        </div>
+                    </Link>
                     <div className={styles.search}>
                         <IconSearch stroke={1.4}/>
                         <input 
@@ -20,18 +24,18 @@ function Header() {
                         />
                     </div>
                     <div className={styles.navbar}>
-                        <Button 
-                            text="Basket"
-                            Icon={IconShoppingCart}
-                        />
-                        <Button
-                            text="Favorites"
-                            Icon={IconHeart}
-                        />
-                        <Button
-                            text="Profile"
-                            Icon={IconUser}
-                        />
+                        <Button size='medium'>
+                            Cart
+                            <IconShoppingCart stroke={1.4}/>
+                        </Button>
+                        <Button size='medium'>
+                            Favorites
+                            <IconHeart stroke={1.4}/>
+                        </Button>
+                        <Button size='medium'>
+                            Profile
+                            <IconUser stroke={1.4}/>
+                        </Button>
                     </div>
                 </div>
             </div>

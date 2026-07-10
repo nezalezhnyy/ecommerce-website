@@ -1,6 +1,6 @@
 import { useState, useContext } from 'react';
 
-import { MainQueryContext } from "../MainPage/MainPage.jsx";
+import { MainQueryContext } from "../../pages/MainPage/MainPage.jsx";
 
 import { IconX } from '@tabler/icons-react';
 
@@ -35,7 +35,10 @@ function FilterPanel() {
         <div className={styles.root}>
             <div className='container'>
                 <div className={styles.filterPanel}>
-                    <Button text="Clear filters" Icon={IconX} onClick={() => handleClearFilters()}/>
+                    <Button onClick={() => handleClearFilters()}>
+                        Clear filters
+                        <IconX stroke={1.4}/>
+                    </Button>
                     <DropDown sortOptions={sortOptions} selectedSort={selectedSort} handleSortSelect={handleSortSelect} />
                 </div>
             </div>

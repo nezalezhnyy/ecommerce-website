@@ -1,7 +1,7 @@
 
 import { useEffect, useState, useContext } from 'react';
 
-import { MainQueryContext } from "../MainPage/MainPage.jsx";
+import { MainQueryContext } from "../../pages/MainPage/MainPage.jsx";
 
 import styles from './DoubleSlider.module.css'
 import { supabase } from '../../supabase.js';
@@ -10,8 +10,8 @@ function DoubleSlider({onChange}) {
 
     const {mainQuery, setMainQuery} = useContext(MainQueryContext);
 
-    const [priceRange, setPriceRange] = useState([0, 1])
-    const [maxPrice, setMaxPrice] = useState()
+    const [priceRange, setPriceRange] = useState([0, 1]);
+    const [maxPrice, setMaxPrice] = useState();
 
     useEffect(() => {
         async function findMaxPrice() {
