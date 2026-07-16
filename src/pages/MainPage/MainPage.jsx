@@ -1,25 +1,20 @@
 import { supabase } from "../../supabase.js";
-
 import { createContext, useEffect, useState, useRef } from "react";
-
+import { useSearchParams } from "react-router-dom";
 import FilterPanel from "../../components/FilterPanel/FilterPanel.jsx";
 import SideBar from "../../components/SideBar/SideBar.jsx";
 import ProductCard from "../../components/ProductCard/ProductCard.jsx";
 import Pagination from "../../components/Pagination/Pagination.jsx";
-
 import styles from './MainPage.module.css'
 
 export const MainQueryContext = createContext({});
 
 function MainPage() {
-    const [mainQuery, setMainQuery] = useState({
-        category: undefined,
-        priceRange: undefined,
-        sortBy: "by rating",
-        "thumb1": 0,
-        "thumb2": 100,
-    });
-
+    const DEFAULT_MAIN_QUERY = {
+        minPrice: 0,
+        maxPrice: 5000,
+    };
+    const [mainQuery, setMainQuery] = useSearchParams(DEFAULT_MAIN_QUERY);
     const [products, setProducts] = useState([]);
     const [currentPage, setCurrentPage] = useState(1);
     const itemsPerPage = 20;
@@ -30,14 +25,18 @@ function MainPage() {
     useEffect(() => {
         async function getProducts() {
 
+            const category = mainQuery.get('category') ?? null;
+            const minPrice = mainQuery.get('minPrice') ?? null;
+            const maxPrice = mainQuery.get('maxPrice') ?? null;
+            const sortBy = mainQuery.get('sortBy') ?? null;
+
             let query = supabase.schema('webshop').from('products').select('*')
 
-            if (mainQuery.category) query = query.eq('category', mainQuery.category)
-            if (mainQuery.priceRange) query = query
-                .gte('price', mainQuery.priceRange[0])
-                .lte('price', mainQuery.priceRange[1])
+            if (category) query = query.eq('category', category);
+            if (minPrice) query = query.gte('price', minPrice);
+            if (maxPrice) query = query.lte('price', maxPrice);
 
-            switch(mainQuery.sortBy) {
+            switch(sortBy) {
                 case "by rating":
                     query = query.order('rating', { ascending: false });
                     break;
@@ -62,7 +61,7 @@ function MainPage() {
 
     return (
         <MainQueryContext.Provider value={{mainQuery, setMainQuery}}>
-            <FilterPanel/>
+            <FilterPanel DEFAULT_MAIN_QUERY={DEFAULT_MAIN_QUERY}/>
             <div className={styles.root}>
                 <div className="container">
                     <div className={styles.main} ref={mainRef}>

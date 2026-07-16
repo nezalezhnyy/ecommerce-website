@@ -1,17 +1,16 @@
 import { supabase } from "../../supabase.js";
-
 import { useState, useEffect, useContext } from "react";
-
 import { MainQueryContext } from "../../pages/MainPage/MainPage.jsx";
-
 import DoubleSlider from "../DoubleSlider/DoubleSlider.jsx";
-
 import styles from './SideBar.module.css'
 
 function SideBar({ setCurrentPage }) {
-
     const {mainQuery, setMainQuery} = useContext(MainQueryContext);
     const [categories, setCategories] = useState([]);
+    const [biggestPrice, setBiggestPrice] = useState();
+
+    const minPrice = Number(mainQuery.get("minPrice"));
+    const maxPrice = Number(mainQuery.get("maxPrice"));
 
     useEffect(() => {
         async function loadCategories() {
@@ -19,15 +18,43 @@ function SideBar({ setCurrentPage }) {
 
             setCategories(data.map(item => item.category))
         }
+
+        async function findBiggestPrice() {
+            const { data, error } = await supabase
+                .schema('webshop')
+                .from('products')
+                .select('price')
+                .order('price', { ascending: false })
+                .limit(1)
+            
+            const price = data[0].price
+
+            setBiggestPrice(price);
+        }
         loadCategories()
+        findBiggestPrice();
     }, [])
 
-    function handleCategoryChange(category) {
-        setMainQuery((q) => q = {...q, category: category})
+    function handleCategoryChange(value) {
+        setMainQuery(prev => {
+            const next = new URLSearchParams(prev);
+            if (next.get('category') === value) {
+                next.delete("category");
+            } else {
+                next.set("category", value);
+            }
+            return next;
+        }, { replace: true });
     }
 
-    function handleSliderChange(value) {
-        setMainQuery((q) => ({ ...q, priceRange: value}))
+    function handleSliderChange(minPrice, maxPrice) {
+        setMainQuery(prev => {
+            const next = new URLSearchParams(prev);
+            next.set('minPrice', minPrice);
+            next.set('maxPrice', maxPrice);
+
+            return next;
+        }, { replace: true })
     }
 
     return (
@@ -40,12 +67,9 @@ function SideBar({ setCurrentPage }) {
                         <input  type="radio"
                                 name="category"
                                 value={category} 
-                                checked={mainQuery.category === category} 
+                                checked={mainQuery.get('category') === category} 
                                 onChange={() => {}} 
-                                onClick={() => {
-                                    if (mainQuery.category === category) setMainQuery((q) => q = {...q, category: undefined})
-                                    else handleCategoryChange(category)
-                                }}
+                                onClick={() => handleCategoryChange(category)}
                         />
                         <span className={styles.custom__radio}></span>
                         <span>{category}</span>
@@ -54,7 +78,7 @@ function SideBar({ setCurrentPage }) {
 
             </div>
             <h4>Price</h4>
-            <DoubleSlider onChange={handleSliderChange}/>
+            <DoubleSlider leftValue={minPrice} rightValue={maxPrice} biggestValue={biggestPrice} onChange={handleSliderChange}/>
         </div>
     )
 }

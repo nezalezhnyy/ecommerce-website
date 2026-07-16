@@ -16,7 +16,6 @@ function DropDown({ sortOptions, selectedSort, setSelectedSort, handleSortSelect
                 setOpen(false);
             }
         }
-
         document.addEventListener("mousedown", handleClick);
         return () => document.removeEventListener("mousedown", handleClick);
     }, []);

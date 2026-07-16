@@ -1,111 +1,113 @@
-
-import { useEffect, useState, useContext } from 'react';
-
-import { MainQueryContext } from "../../pages/MainPage/MainPage.jsx";
-
+import { useEffect, useState, useRef, useCallback } from 'react';
+import { useSearchParams } from 'react-router-dom';
+import clsx from 'clsx';
 import styles from './DoubleSlider.module.css'
-import { supabase } from '../../supabase.js';
 
-function DoubleSlider({onChange}) {
+function DoubleSlider({ leftValue, rightValue, biggestValue, onChange }) {
+    const [sliderValue, setSliderValue] = useState({left: leftValue, right: rightValue});
+    const sliderValueRef = useRef(sliderValue);
+    const [isDragging, setIsDragging] = useState(false);
 
-    const {mainQuery, setMainQuery} = useContext(MainQueryContext);
-
-    const [priceRange, setPriceRange] = useState([0, 1]);
-    const [maxPrice, setMaxPrice] = useState();
-
-    useEffect(() => {
-        async function findMaxPrice() {
-            const { data, error } = await supabase
-                .schema('webshop')
-                .from('products')
-                .select('price')
-                .order('price', { ascending: false })
-                .limit(1)
-            
-            const price = data[0].price
-
-            setMaxPrice(price);
-            setPriceRange([price * mainQuery.thumb1 / 100, price * mainQuery.thumb2 / 100])
-        }
-        findMaxPrice();
-    }, [])
+    const valueToPercent = useCallback((value) => (value / biggestValue) * 100, [biggestValue]);
+    const clamp = (num, min, max) => Math.min(Math.max(num, min), max);
 
     useEffect(() => {
-        if (maxPrice) {
-            setPriceRange([maxPrice * mainQuery.thumb1 / 100, maxPrice * mainQuery.thumb2 / 100])
-        } else return
-    }, [mainQuery.thumb1, mainQuery.thumb2])
+        setSliderValue({ left: leftValue, right: rightValue });
+    }, [leftValue, rightValue]);
 
     useEffect(() => {
-        onChange(priceRange);
-    }, [priceRange])
+        sliderValueRef.current = sliderValue;
+    }, [sliderValue]);
 
-    function mouseDownHandler(event, thumbNumber) {
-        event.preventDefault();
+    const mouseDownHandler = (e) => {
+        e.preventDefault();
+        setIsDragging(true);
+        const name = e.currentTarget.dataset.name;
+        const sliderWidth = document.querySelector("." + styles.slider).clientWidth;
+        const thumbWidthPercent = (e.currentTarget.clientWidth / sliderWidth) * 100;
+        const thumbGapValue = (thumbWidthPercent * biggestValue) / 100;
 
-        const cursorPos = event.clientX;
+        function mouseMoveHandler(e) {
+            const deltaValue = (e.movementX / sliderWidth) * biggestValue;
 
-        function handleMouseMove(e) {
-            mouseMoveHandler(e, thumbNumber)
-        }
+            setSliderValue(prev => {
+                let newValue = prev[name] + deltaValue;
+
+                if (name === 'left') {
+                    newValue = clamp(newValue, 0, prev.right - thumbGapValue);
+                } else {
+                    newValue = clamp(newValue, prev.left + thumbGapValue, biggestValue);
+                }
+
+                const updated = {...prev, [name]: Math.round(newValue)};
+                return updated;
+            })
+        };
 
         function mouseUpHandler(e) {
-            document.removeEventListener('mousemove', handleMouseMove);
-            document.removeEventListener('mouseup', mouseUpHandler)
-        }
+            setIsDragging(false);
+            const { left, right } = sliderValueRef.current;
+            onChange(left, right);
+            document.removeEventListener('mousemove', mouseMoveHandler);
+            document.removeEventListener('mouseup', mouseUpHandler);
+        };
         
-        document.addEventListener('mousemove', handleMouseMove);
+        document.addEventListener('mousemove', mouseMoveHandler);
         document.addEventListener('mouseup', mouseUpHandler);
-    }
+    };
 
-    function mouseMoveHandler(event, thumbNumber) {
-    const sliderWidth = document.querySelector("." + styles.slider).clientWidth;
-    const thumbWidth = document.querySelector("." + styles.thumb).clientWidth;
-    const thumbWidthPercent = (thumbWidth / sliderWidth) * 100;
+    const handleInputChange = (e) => {
+        setSliderValue(prev => {
+            let { name, value } = e.target;
+            let newValue = 0;
+            value = value.replace(/[^\d.]/g, "");
+            
+            if (value !== "") {
+                if (name === 'left') {
+                    newValue = clamp(Number(value), 0, sliderValue.right);
+                }
+                else {
+                    newValue = clamp(Number(value), sliderValue.left, biggestValue);
+                }
+            };
 
-        setMainQuery((q) => {
-            if (thumbNumber === 1) {
-                const next = q.thumb1 + (event.movementX / sliderWidth) * 100;
-                const clamped = Math.min(
-                    Math.max(next, 0),
-                    q.thumb2 - thumbWidthPercent
-                );
-                return { ...q, thumb1: clamped };
-            } else {
-                const next = q.thumb2 + (event.movementX / sliderWidth) * 100;
-                const clamped = Math.min(
-                    Math.max(next, q.thumb1 + thumbWidthPercent),
-                    100
-                );
-                return { ...q, thumb2: clamped };
-            }
-        });
-    }
+            const updated = {...prev, [name]: Math.round(newValue)};
+            onChange(updated.left, updated.right);
+            return updated;
+        })
+    };
+
+    const leftPercent = valueToPercent(sliderValue.left);
+    const rightPercent = valueToPercent(sliderValue.right);
     
     return (
         <div className={styles.root}>
-            <div className={styles.values}>
-                <span>{Math.round(priceRange[0])}</span>
-                <span>{Math.round(priceRange[1])}</span>
+            <div className={styles.inputs}>
+                <input name='left' type="text" value={sliderValue.left} onChange={handleInputChange}/>
+                <input name='right' type="text" value={sliderValue.right} onChange={handleInputChange}/>
             </div>
-            <div className={styles.slider} style={{
-                background: `linear-gradient(
-                    to right,
-                    var(--color-light-gray) 0%,
-                    var(--color-light-gray) ${mainQuery.thumb1}%,
-                    var(--border-color-gray) ${mainQuery.thumb1}%,
-                    var(--border-color-gray) ${mainQuery.thumb2}%,
-                    var(--color-light-gray) ${mainQuery.thumb2}%,
-                    var(--color-light-gray) 100%
-                )`
-            }}>
-                <div    className={styles.thumb} 
-                        onMouseDown={(e) => mouseDownHandler(e, 1)} 
-                        style={{left: mainQuery.thumb1 + '%'}}>
+            <div 
+                className={styles.slider}
+                style={{
+                    background: `linear-gradient(
+                        to right,
+                        var(--color-light-gray) 0%,
+                        var(--color-light-gray) ${leftPercent}%,
+                        var(--border-color-gray) ${leftPercent}%,
+                        var(--border-color-gray) ${rightPercent}%,
+                        var(--color-light-gray) ${rightPercent}%,
+                        var(--color-light-gray) 100%
+                    )`
+                }}>
+                <div    className={styles.thumb}
+                        data-name='left'
+                        onMouseDown={mouseDownHandler} 
+                        style={{left: leftPercent + '%'}}>
                 </div>
-                <div    className={styles.thumb} 
-                        onMouseDown={(e) => mouseDownHandler(e, 2)} 
-                        style={{left: mainQuery.thumb2 + '%'}}>
+                <div    className={styles.thumb}
+                        data-name='right'
+                        onMouseDown={mouseDownHandler} 
+                        style={{left: rightPercent + '%'}}>
                 </div>
             </div>
         </div>

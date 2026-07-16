@@ -9,26 +9,25 @@ import Button from '../Button/Button.jsx';
 
 import styles from './FilterPanel.module.css';
 
-function FilterPanel() {
+function FilterPanel({ DEFAULT_MAIN_QUERY }) {
     const {mainQuery, setMainQuery} = useContext(MainQueryContext);
 
     const sortOptions = ["by rating", "new", "price: low to high", "price: high to low"];
     const [selectedSort, setSelectedSort] = useState(sortOptions[0]);
 
     function handleSortSelect(value) {
-        setMainQuery((q) => ({ ...q, sortBy: value}));
+        setMainQuery((prev) => {
+            const next = new URLSearchParams(prev);
+            next.set('sortBy', value);
+            
+            return next
+        });
         setSelectedSort(value)
     }
 
     function handleClearFilters() {
         setSelectedSort(sortOptions[0]);
-        setMainQuery({
-            category: undefined,
-            priceRange: undefined,
-            sortBy: "by rating",
-            "thumb1": 0,
-            "thumb2": 100,
-        })
+        setMainQuery(DEFAULT_MAIN_QUERY);
     }
 
     return (
