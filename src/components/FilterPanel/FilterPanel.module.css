@@ -10,18 +10,13 @@
 
 .filterPanel {
     display: flex;
+    flex-direction: row;
     align-items: center;
     justify-content: space-between;
     height: 100%;
 }
 
-.buttons {
-    display: flex;
-    flex-direction: row;
-    gap: 16px;
-}
-
-.filters {
+.filterValues {
     display: flex;
     flex-direction: row;
     gap: 8px;

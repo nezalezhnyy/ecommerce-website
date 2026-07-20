@@ -72,6 +72,7 @@ input[type="text"]::placeholder {
 * {
     scrollbar-width: thin;
     scrollbar-color: #aaaaaa transparent;
+    scrollbar-gutter: stable;
 }
 
 *, *::before, *::after {

@@ -44,6 +44,7 @@
 }
 
 .search__input {
+    width: 100%;
     font-size: 18px;
     border: 0;
     background-color: var(--main-background-color);

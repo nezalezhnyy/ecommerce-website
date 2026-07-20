@@ -42,7 +42,6 @@
     position: absolute;
     width: 100%;
     top: 120%;
-    left: 0;
     background-color: var(--main-background-color);
     border-radius: 10px;
     border: 1px solid var(--border-color-light-gray);
@@ -51,6 +50,7 @@
 
 .menu li {
     padding: 2px 8px;
+    border-radius: 10px;
 }
 
 .menu li:hover:not(.selectedSort) {

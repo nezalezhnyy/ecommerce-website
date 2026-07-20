@@ -9,8 +9,7 @@ function SideBar({ setCurrentPage }) {
     const [categories, setCategories] = useState([]);
     const [biggestPrice, setBiggestPrice] = useState();
 
-    const minPrice = Number(mainQuery.get("minPrice"));
-    const maxPrice = Number(mainQuery.get("maxPrice"));
+    const priceRange = mainQuery.get("priceRange")?.split(" - ").map(Number) ?? [0, 37000];
 
     useEffect(() => {
         async function loadCategories() {
@@ -43,6 +42,8 @@ function SideBar({ setCurrentPage }) {
             } else {
                 next.set("category", value);
             }
+            next.delete('page');
+
             return next;
         }, { replace: true });
     }
@@ -50,8 +51,8 @@ function SideBar({ setCurrentPage }) {
     function handleSliderChange(minPrice, maxPrice) {
         setMainQuery(prev => {
             const next = new URLSearchParams(prev);
-            next.set('minPrice', minPrice);
-            next.set('maxPrice', maxPrice);
+            next.set('priceRange', [minPrice, maxPrice].join(" - "));
+            next.delete('page');
 
             return next;
         }, { replace: true })
@@ -78,7 +79,7 @@ function SideBar({ setCurrentPage }) {
 
             </div>
             <h4>Price</h4>
-            <DoubleSlider leftValue={minPrice} rightValue={maxPrice} biggestValue={biggestPrice} onChange={handleSliderChange}/>
+            <DoubleSlider leftValue={priceRange[0]} rightValue={priceRange[1]} biggestValue={biggestPrice} onChange={handleSliderChange}/>
         </div>
     )
 }

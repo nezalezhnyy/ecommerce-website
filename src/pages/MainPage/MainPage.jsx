@@ -10,31 +10,25 @@ import styles from './MainPage.module.css'
 export const MainQueryContext = createContext({});
 
 function MainPage() {
-    const DEFAULT_MAIN_QUERY = {
-        minPrice: 0,
-        maxPrice: 5000,
-    };
-    const [mainQuery, setMainQuery] = useSearchParams(DEFAULT_MAIN_QUERY);
+    const [mainQuery, setMainQuery] = useSearchParams();
     const [products, setProducts] = useState([]);
-    const [currentPage, setCurrentPage] = useState(1);
+
     const itemsPerPage = 20;
     const totalPages = Math.ceil(products.length / itemsPerPage);
+    const pageQuery = Number(mainQuery.get('page')) || 1;
 
     const mainRef = useRef(null);
 
     useEffect(() => {
         async function getProducts() {
-
             const category = mainQuery.get('category') ?? null;
-            const minPrice = mainQuery.get('minPrice') ?? null;
-            const maxPrice = mainQuery.get('maxPrice') ?? null;
+            const priceRange = mainQuery.get('priceRange')?.split(" - ").map(Number) ?? null;
             const sortBy = mainQuery.get('sortBy') ?? null;
 
             let query = supabase.schema('webshop').from('products').select('*')
 
             if (category) query = query.eq('category', category);
-            if (minPrice) query = query.gte('price', minPrice);
-            if (maxPrice) query = query.lte('price', maxPrice);
+            if (priceRange) query = query.gte('price', priceRange[0]).lte('price', priceRange[1])
 
             switch(sortBy) {
                 case "by rating":
@@ -51,17 +45,31 @@ function MainPage() {
                     break;
             }
 
+            console.log(priceRange)
+
             const { data, error } = await query;
 
             setProducts(data);
-            setCurrentPage(1);
         }
         getProducts()
     }, [mainQuery])
 
+    function handlePageChange(page) {
+        if (page !== pageQuery) {
+            setMainQuery(prev => {
+                const next = new URLSearchParams(prev);
+                if (page === 1) next.delete('page')
+                else next.set('page', page);
+
+                return next;
+            }, { replace: true })
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+    }
+
     return (
         <MainQueryContext.Provider value={{mainQuery, setMainQuery}}>
-            <FilterPanel DEFAULT_MAIN_QUERY={DEFAULT_MAIN_QUERY}/>
+            <FilterPanel/>
             <div className={styles.root}>
                 <div className="container">
                     <div className={styles.main} ref={mainRef}>
@@ -69,11 +77,11 @@ function MainPage() {
                             <SideBar/>
                             <div className={styles.wrapper}>
                                 <div className={styles.products}>
-                                    {products.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage).map((product) => (
+                                    {products.slice((pageQuery - 1) * itemsPerPage, pageQuery * itemsPerPage).map((product) => (
                                         <ProductCard props={product} key={product.id}/>
                                     ))}
                                 </div>
-                                <Pagination itemsPerPage={itemsPerPage} currentPage={currentPage} setCurrentPage={setCurrentPage} totalPages={totalPages}/>
+                                <Pagination pageQuery={pageQuery} itemsPerPage={itemsPerPage} totalPages={totalPages} onChange={handlePageChange}/>
                             </div>
                         </div>
                     </div>

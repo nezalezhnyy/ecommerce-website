@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react';
 import { IconChevronLeft, IconChevronRight } from '@tabler/icons-react';
 import styles from "./Pagination.module.css"
 
@@ -36,20 +37,20 @@ function getPaginationRange(currentPage, totalPages, siblingCount = 1) {
     return [1, '...', ...middleRange, '...', totalPages];
 }
 
-function Pagination({ itemsPerPage, currentPage, setCurrentPage, totalPages, siblingCount = 1 }) {
-    function handlePageChange(page) {
-        if (page !== currentPage) {
-            setCurrentPage(page);
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-        }
-    }
+function Pagination({ pageQuery, itemsPerPage, totalPages, onChange }) {
+    const [currentPage, setCurrentPage] = useState(1);
 
+    const siblingCount = 1;
     const pages = getPaginationRange(currentPage, totalPages, siblingCount);
+
+    useEffect(() => {
+        setCurrentPage(pageQuery);
+    }, [pageQuery])
 
     return (
         <div className={styles.root}>
             {currentPage > 1 &&
-                <button onClick={() => handlePageChange(currentPage - 1)}>
+                <button onClick={() => onChange(currentPage - 1)}>
                     <IconChevronLeft/>
                 </button>
             }
@@ -62,7 +63,7 @@ function Pagination({ itemsPerPage, currentPage, setCurrentPage, totalPages, sib
                 ) : (
                     <button 
                         key={page}
-                        onClick={() => handlePageChange(page)}
+                        onClick={() => onChange(page)}
                         className={(currentPage === page) ? styles.active : undefined}
                     > 
                         {page}
@@ -71,7 +72,7 @@ function Pagination({ itemsPerPage, currentPage, setCurrentPage, totalPages, sib
             )}
 
             {currentPage < totalPages &&
-                <button onClick={() => handlePageChange(currentPage + 1)}>
+                <button onClick={() => onChange(currentPage + 1)}>
                     <IconChevronRight/>
                 </button>
             }

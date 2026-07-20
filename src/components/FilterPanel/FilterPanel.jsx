@@ -9,11 +9,12 @@ import Button from '../Button/Button.jsx';
 
 import styles from './FilterPanel.module.css';
 
-function FilterPanel({ DEFAULT_MAIN_QUERY }) {
+function FilterPanel() {
     const {mainQuery, setMainQuery} = useContext(MainQueryContext);
 
     const sortOptions = ["by rating", "new", "price: low to high", "price: high to low"];
     const [selectedSort, setSelectedSort] = useState(sortOptions[0]);
+    const filteredQuery = [...mainQuery.entries()].filter(([key, value]) => key !== 'sortBy' && key !== 'page');
 
     function handleSortSelect(value) {
         setMainQuery((prev) => {
@@ -25,19 +26,42 @@ function FilterPanel({ DEFAULT_MAIN_QUERY }) {
         setSelectedSort(value)
     }
 
-    function handleClearFilters() {
+    function handleClearAll() {
         setSelectedSort(sortOptions[0]);
-        setMainQuery(DEFAULT_MAIN_QUERY);
+        setMainQuery();
+    }
+
+    function handleDeleteFilter(key) {
+        setMainQuery((prev) => {
+            const next = new URLSearchParams(prev);
+            next.delete(`${key}`);
+            
+            return next
+        });
     }
 
     return (
         <div className={styles.root}>
             <div className='container'>
                 <div className={styles.filterPanel}>
-                    <Button onClick={() => handleClearFilters()}>
-                        Clear filters
-                        <IconX stroke={1.4}/>
-                    </Button>
+                    <div>
+                        {filteredQuery.length > 0 && 
+                            <div className={styles.filterValues}>
+                                <Button 
+                                    size='medium'
+                                    variant='filter'
+                                    onClick={handleClearAll}>
+                                    Clear all
+                                </Button>
+                                {filteredQuery.map(([key, value]) => (
+                                    <Button size='small' variant='filter' onClick={() => handleDeleteFilter(key)} key={value}>
+                                        {value}
+                                        <IconX stroke={1.4}/>
+                                    </Button>
+                                ))}
+                            </div>
+                        }
+                    </div>
                     <DropDown sortOptions={sortOptions} selectedSort={selectedSort} handleSortSelect={handleSortSelect} />
                 </div>
             </div>

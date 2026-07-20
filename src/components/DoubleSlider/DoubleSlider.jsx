@@ -6,7 +6,6 @@ import styles from './DoubleSlider.module.css'
 function DoubleSlider({ leftValue, rightValue, biggestValue, onChange }) {
     const [sliderValue, setSliderValue] = useState({left: leftValue, right: rightValue});
     const sliderValueRef = useRef(sliderValue);
-    const [isDragging, setIsDragging] = useState(false);
 
     const valueToPercent = useCallback((value) => (value / biggestValue) * 100, [biggestValue]);
     const clamp = (num, min, max) => Math.min(Math.max(num, min), max);
@@ -21,7 +20,6 @@ function DoubleSlider({ leftValue, rightValue, biggestValue, onChange }) {
 
     const mouseDownHandler = (e) => {
         e.preventDefault();
-        setIsDragging(true);
         const name = e.currentTarget.dataset.name;
         const sliderWidth = document.querySelector("." + styles.slider).clientWidth;
         const thumbWidthPercent = (e.currentTarget.clientWidth / sliderWidth) * 100;
@@ -45,7 +43,6 @@ function DoubleSlider({ leftValue, rightValue, biggestValue, onChange }) {
         };
 
         function mouseUpHandler(e) {
-            setIsDragging(false);
             const { left, right } = sliderValueRef.current;
             onChange(left, right);
             document.removeEventListener('mousemove', mouseMoveHandler);
