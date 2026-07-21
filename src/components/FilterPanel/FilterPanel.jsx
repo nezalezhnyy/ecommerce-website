@@ -9,7 +9,7 @@ import Button from '../Button/Button.jsx';
 
 import styles from './FilterPanel.module.css';
 
-function FilterPanel() {
+function FilterPanel({ products }) {
     const {mainQuery, setMainQuery} = useContext(MainQueryContext);
 
     const sortOptions = ["by rating", "new", "price: low to high", "price: high to low"];
@@ -26,7 +26,7 @@ function FilterPanel() {
         setSelectedSort(value)
     }
 
-    function handleClearAll() {
+    function handleClearAllFilters() {
         setSelectedSort(sortOptions[0]);
         setMainQuery();
     }
@@ -43,14 +43,17 @@ function FilterPanel() {
     return (
         <div className={styles.root}>
             <div className='container'>
-                <div className={styles.filterPanel}>
-                    <div>
+                <div className={styles.filterPanelWrapper}>
+                    <div className={styles.filterPanel}>
+                        {products.length > 0 &&
+                            <span>Products found - {products.length}</span>
+                        }
                         {filteredQuery.length > 0 && 
                             <div className={styles.filterValues}>
                                 <Button 
-                                    size='medium'
+                                    size='small'
                                     variant='filter'
-                                    onClick={handleClearAll}>
+                                    onClick={handleClearAllFilters}>
                                     Clear all
                                 </Button>
                                 {filteredQuery.map(([key, value]) => (

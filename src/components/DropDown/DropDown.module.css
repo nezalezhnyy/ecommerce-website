@@ -10,14 +10,14 @@
     flex-direction: row;
     border: 1px solid var(--border-color-light-gray);
     border-radius: 10px;
-    padding-block: 2px;
+    padding-block: 4px;
     padding-left: 10px;
     padding-right: 6px;
-    width: 168px;
-    gap: 8px;
+    min-width: 168px;
     color: var(--font-color-gray); 
     cursor: pointer;
     transition: 0.2s;
+    flex: none;
 }
 
 .icon {
@@ -51,6 +51,7 @@
 .menu li {
     padding: 2px 8px;
     border-radius: 10px;
+    transition: 0.2s ease;
 }
 
 .menu li:hover:not(.selectedSort) {

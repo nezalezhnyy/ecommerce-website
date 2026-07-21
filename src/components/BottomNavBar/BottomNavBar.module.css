@@ -1,0 +1,12 @@
+.root {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+}
+
+@media (max-width: 1024px) {
+    .root {
+        display: none;
+    }
+}

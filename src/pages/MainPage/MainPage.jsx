@@ -69,7 +69,7 @@ function MainPage() {
 
     return (
         <MainQueryContext.Provider value={{mainQuery, setMainQuery}}>
-            <FilterPanel/>
+            <FilterPanel products={products} />
             <div className={styles.root}>
                 <div className="container">
                     <div className={styles.main} ref={mainRef}>
@@ -87,6 +87,7 @@ function MainPage() {
                     </div>
                 </div>
             </div>
+            
         </MainQueryContext.Provider>
     )
 }

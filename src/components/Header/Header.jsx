@@ -37,6 +37,11 @@ function Header() {
                             <IconUser stroke={1.4}/>
                         </Button>
                     </div>
+                    <div className={styles.searchButton}>
+                        <Button size='medium' variant='icon'>
+                            <IconSearch stroke={1.4}/>
+                        </Button>
+                    </div>
                 </div>
             </div>
         </div>

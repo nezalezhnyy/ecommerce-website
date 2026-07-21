@@ -3,11 +3,12 @@
     flex-direction: row;
     align-items: center;
     justify-content: center;
-    gap: 4px;
+    gap: 8px;
     border-radius: 12px;
     cursor: pointer;
     transition: 0.2s ease;
     color: var(--font-color-gray);
+    flex: none;
 }
 
 .btn:disabled {
@@ -21,7 +22,7 @@
 }
 
 .btn--medium {
-    padding: 6px 16px;
+    padding: 6px 12px;
     font-size: 18px;
 }
 
@@ -50,4 +51,14 @@
 
 .btn--filter {
     background-color: var(--color-light-gray);
+    border: 1px solid var(--border-color-light-gray);
+}
+
+.btn--filter:hover {
+    background-color: var(--header-background-color);
+}
+
+
+.btn--icon:hover:not(:disabled) {
+    color: var(--color-green-hover);
 }
