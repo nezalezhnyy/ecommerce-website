@@ -1,6 +1,7 @@
 import { supabase } from "../../supabase.js";
 import { createContext, useEffect, useState, useRef } from "react";
 import { useSearchParams } from "react-router-dom";
+import { useMediaQuery } from 'react-responsive';
 import FilterPanel from "../../components/FilterPanel/FilterPanel.jsx";
 import SideBar from "../../components/SideBar/SideBar.jsx";
 import ProductCard from "../../components/ProductCard/ProductCard.jsx";
@@ -10,14 +11,21 @@ import styles from './MainPage.module.css'
 export const MainQueryContext = createContext({});
 
 function MainPage() {
-    const [mainQuery, setMainQuery] = useSearchParams();
+    const [mainQuery, setMainQuery] = useSearchParams({
+        sortBy: 'by rating'
+    });
     const [products, setProducts] = useState([]);
 
     const itemsPerPage = 20;
     const totalPages = Math.ceil(products.length / itemsPerPage);
     const pageQuery = Number(mainQuery.get('page')) || 1;
 
+    const isDesktop = useMediaQuery({ query: '(min-width: 1024px)'});
+    const [sideBarShow, setSideBarShow] = useState(false);
+
     const mainRef = useRef(null);
+
+    useEffect(() => console.log(sideBarShow), [sideBarShow])
 
     useEffect(() => {
         async function getProducts() {
@@ -69,13 +77,16 @@ function MainPage() {
 
     return (
         <MainQueryContext.Provider value={{mainQuery, setMainQuery}}>
-            <FilterPanel products={products} />
+            <FilterPanel isDesktop={isDesktop} sideBarShow={sideBarShow} setSideBarShow={setSideBarShow} />
             <div className={styles.root}>
                 <div className="container">
                     <div className={styles.main} ref={mainRef}>
                         <div className={styles.sheet}>
-                            <SideBar/>
+                            <SideBar isDesktop={isDesktop} sideBarShow={sideBarShow} setSideBarShow={setSideBarShow} />
                             <div className={styles.wrapper}>
+                                {products.length > 0 &&
+                                    <span className={styles.productsFound}>Products found - {products.length}</span>
+                                }
                                 <div className={styles.products}>
                                     {products.slice((pageQuery - 1) * itemsPerPage, pageQuery * itemsPerPage).map((product) => (
                                         <ProductCard props={product} key={product.id}/>

@@ -1,19 +1,16 @@
 import clsx from 'clsx';
-
 import { useState, useEffect, useRef } from 'react';
-
 import { IconChevronDown } from '@tabler/icons-react';
-
 import styles from './DropDown.module.css';
 
-function DropDown({ sortOptions, selectedSort, setSelectedSort, handleSortSelect }) {
-    const [open, setOpen] = useState(false);
+function DropDown({ options, currentValue, onChange }) {
+    const [isOpen, setIsOpen] = useState(false);
     const buttonRef = useRef(null);
 
     useEffect(() => {
         function handleClick(e) {
             if (buttonRef.current && !buttonRef.current.contains(e.target)) {
-                setOpen(false);
+                setIsOpen(false);
             }
         }
         document.addEventListener("mousedown", handleClick);
@@ -23,23 +20,23 @@ function DropDown({ sortOptions, selectedSort, setSelectedSort, handleSortSelect
     return (
         <div ref={buttonRef} className={styles.root}>
             <div    className={styles.button}
-                    onClick={() => setOpen(o => o = !o)}
+                    onClick={() => setIsOpen(prev => !prev)}
             >
-                <span>{selectedSort}</span>
+                <span>{currentValue}</span>
                 <IconChevronDown className={clsx(
                     styles.icon,
-                    open && styles.rotate
+                    isOpen && styles.rotate
                 )}/>
             </div>
 
-            {open && (
+            {isOpen && (
                 <ul className={styles.menu}>
-                    {sortOptions.map((option) => (
-                        <li key={option} className={option === selectedSort ? styles.selectedSort : null} onClick={() => {
-                            setOpen(false);
-                            handleSortSelect(option)
+                    {options.map((value) => (
+                        <li key={value} className={value === currentValue ? styles.currentValue : null} onClick={() => {
+                            setIsOpen(false);
+                            onChange(value)
                         }
-                        }>{option}</li>
+                        }>{value}</li>
                     ))}
                 </ul>
             )}

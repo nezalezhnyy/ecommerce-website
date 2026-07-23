@@ -72,7 +72,6 @@ input[type="text"]::placeholder {
 * {
     scrollbar-width: thin;
     scrollbar-color: #aaaaaa transparent;
-    scrollbar-gutter: stable;
 }
 
 *, *::before, *::after {
@@ -86,4 +85,8 @@ input[type="text"]::placeholder {
     margin-right: auto;
     margin-left: auto;
     padding-inline: 18px;
+}
+
+.invisible {
+    display: none;
 }

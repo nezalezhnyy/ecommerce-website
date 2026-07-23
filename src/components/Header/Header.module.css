@@ -34,7 +34,7 @@
     display: none;
     flex-direction: row;
     align-items: center;
-    min-width: 400px;
+    width: 100%;
     gap: 8px;
     background-color: var(--main-background-color);
     border-radius: 12px;
@@ -85,9 +85,14 @@
 
     .search {
         display: flex;
+        width: 500px;
     }
 
     .searchButton {
         display: none;
     }
+}
+
+.forceVisible {
+    display: flex !important;
 }

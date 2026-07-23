@@ -58,6 +58,9 @@
     background-color: var(--header-background-color);
 }
 
+.btn--icon {
+    padding: 0;
+}
 
 .btn--icon:hover:not(:disabled) {
     color: var(--color-green-hover);

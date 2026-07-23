@@ -13,18 +13,34 @@
     flex-direction: row;
     align-items: center;
     justify-content: space-between;
+    gap: 16px;
     height: 100%;
 }
 
 .filterPanel {
-    display: flex;
+    display: none;
     flex-direction: row;
     align-items: center;
     gap: 12px;
 }
 
-.filterValues {
+.showFiltersBtn {
     display: flex;
-    flex-direction: row;
-    gap: 8px;
+    width: 100%;
+    min-width: 160px;
+}
+
+.showFiltersBtn button {
+    width: 100%;
+}
+
+
+@media (min-width: 1024px) {
+    .showFiltersBtn {
+        display: none;
+    }
+
+    .filterPanel {
+        display: flex;
+    }
 }

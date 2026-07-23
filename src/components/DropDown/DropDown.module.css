@@ -1,6 +1,7 @@
 .root {
     position: relative;
     user-select: none;
+    width: 100%;
 }
 
 .button {
@@ -9,15 +10,17 @@
     justify-content: space-between;
     flex-direction: row;
     border: 1px solid var(--border-color-light-gray);
-    border-radius: 10px;
+    border-radius: 12px;
     padding-block: 4px;
     padding-left: 10px;
     padding-right: 6px;
-    min-width: 168px;
+    min-width: 160px;
     color: var(--font-color-gray); 
     cursor: pointer;
     transition: 0.2s;
     flex: none;
+    width: 100%;
+    box-sizing: border-box;
 }
 
 .icon {
@@ -54,10 +57,16 @@
     transition: 0.2s ease;
 }
 
-.menu li:hover:not(.selectedSort) {
+.menu li:hover:not(.currentValue) {
     background-color: var(--header-background-color);
 }
 
-.selectedSort {
+.currentValue {
     background-color: var(--color-light-gray);
+}
+
+@media (min-width: 1024px) {
+    .root {
+        width: 160px;
+    }
 }
